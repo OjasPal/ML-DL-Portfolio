@@ -12,7 +12,7 @@ st.set_page_config(page_title="Movie Recommender", page_icon="🎬", layout="cen
 # ---------- Data loading + model building (cached so it only runs once) ----------
 @st.cache_data(show_spinner="Loading dataset...")
 def load_data():
-    movies = pd.read_csv("data/tmdb_movies_50k.csv")
+    movies = pd.read_csv("projects/movie-recommendation-system/data/tmdb_movies_50k.csv")
     movies["index"] = movies.index
 
     selected_features = ["genres", "keywords", "overview", "tagline"]
