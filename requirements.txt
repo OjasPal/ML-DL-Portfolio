@@ -2,8 +2,12 @@ streamlit
 pandas
 numpy
 scikit-learn
-kaggle
+joblib
 keras
 tensorflow
 pillow
 streamlit-drawable-canvas
+nltk
+matplotlib
+seaborn
+kaggle

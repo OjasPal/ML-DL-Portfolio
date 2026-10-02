@@ -1,45 +1,36 @@
-# 🏠 Delhi Housing Price Prediction
+# 🏠 Delhi Housing Price Predictor
 
-A machine learning model that estimates apartment and house prices in Delhi based on area, location, number of bedrooms, resale status, and available amenities — deployed as an interactive Streamlit page within the [ML-DL-Portfolio](../../) app.
+An interactive real estate valuation dashboard that estimates property prices across Delhi using a pre-trained Linear Regression model, served instantly via Streamlit.
 
 ## Overview
 
-This project uses historical real estate data to train a Linear Regression model that predicts property prices in Indian Rupees. Users can select a location, enter the property area, choose the number of bedrooms, and toggle available amenities (swimming pool, gym, security, parking, etc.) to get an instant price estimate.
+Select a location, enter the property area, choose bedroom count and resale status, and toggle available amenities — the dashboard returns an instant price estimate, automatically formatted in Lakhs or Crores depending on magnitude. The interface is built as a custom two-panel dashboard: an interactive input form on the left, and a live architecture/documentation panel on the right.
 
 ## Dataset
 
-**[Housing Prices in Metropolitan Areas of India](https://www.kaggle.com/datasets/ruchi798/housing-prices-in-metropolitan-areas-of-india)** (Kaggle) — specifically `Delhi.csv`, containing 4,998 property listings across 40 features.
+**[Housing Prices in Metropolitan Areas of India](https://www.kaggle.com/datasets/ruchi798/housing-prices-in-metropolitan-areas-of-india)** (Kaggle) — `Delhi.csv`, containing property listings across Delhi with 40 features spanning location, size, bedroom count, resale status, and amenities (gymnasium, swimming pool, security, parking, and more).
 
-Key columns used:
-- `Price` — target variable (scaled to millions during training for numerical stability)
-- `Area` — property size in square feet
-- `Location` — locality within Delhi (label-encoded)
-- `No. of Bedrooms`, `Resale` — core property attributes
-- 35+ binary amenity columns (Gymnasium, SwimmingPool, ClubHouse, 24X7Security, CarParking, etc.)
+## Model & Architecture
 
-**Note:** the dataset's creator used `9` to mark amenities with no available information (not necessarily absent in real life) — this is expected and not a data quality issue.
+- **Algorithm:** Linear Regression, trained on standardized numerical features and label-encoded location data.
+- **Preprocessing:** `LabelEncoder` for `Location`, `StandardScaler` applied across all input features, with the target variable scaled to millions during training for numerical stability and converted back to full Rupee values at inference.
+- **Pre-compiled artifacts:** the trained model (`housing_price_model.joblib`) and fitted scaler (`housing_scaler.joblib`) are exported once from the notebook via `joblib` and loaded directly by the app at startup (`@st.cache_resource`) — the model is never retrained at runtime, so predictions are served instantly rather than waiting on a fresh training pass on every load.
+- **Graceful fallback:** if the raw dataset isn't present locally, the app falls back to a bundled default list of Delhi localities so the location selector still functions.
 
-## Model
+## Features
 
-- **Algorithm:** Linear Regression (scikit-learn)
-- **Preprocessing:** `LabelEncoder` for the `Location` column, `StandardScaler` applied to all features
-- **Split:** `StratifiedShuffleSplit` (80/20) stratified on the `Resale` column to keep new/resale property ratios consistent across train and test sets
-- **Evaluation metric:** RMSE (Root Mean Squared Error) on the held-out test set
-
-The app trains the model fresh on startup (cached via `st.cache_resource` so it only runs once per session) rather than loading a pre-trained file — keeping the deployed app self-contained and always in sync with the current dataset.
-
-## How It Works
-
-1. User selects location, area, bedroom count, resale status, and amenities via the sidebar/form
-2. Inputs are encoded and scaled using the same transformations applied during training
-3. The trained model predicts a price (in millions), which is converted back to actual Rupees
-4. Result is displayed in ₹, with an automatic Lakhs/Crores conversion for readability
+- Location selector covering major Delhi localities
+- Area, bedroom count, and resale status inputs
+- Expandable amenities panel covering 30+ property features
+- Automatic Lakhs/Crores formatting based on predicted value
+- Custom-themed UI with a dedicated architecture/documentation panel
 
 ## Tech Stack
 
 - **Python**, **Pandas**, **NumPy**
-- **scikit-learn** — LinearRegression, StandardScaler, LabelEncoder, StratifiedShuffleSplit
-- **Streamlit** — interactive UI
+- **scikit-learn** — LinearRegression, StandardScaler, LabelEncoder
+- **Streamlit** — dashboard interface and caching
+- **joblib** — model artifact serialization
 
 ## Run Locally
 
@@ -49,13 +40,12 @@ From the repo root:
 # One-time setup
 pip install -r requirements.txt
 python projects/housing-price-prediction/download_data.py
+```
 
-# Run the full multi-page app
+Ensure `housing_price_model.joblib` and `housing_scaler.joblib` are present in `projects/housing-price-prediction/models/` (exported from the project notebook). Then:
+
+```bash
 streamlit run Home.py
 ```
 
-Then navigate to the **Delhi Housing Price Predictor** page from the sidebar.
-
-## Notes
-
-This was originally built as a beginner project and later adapted into this portfolio with a Streamlit interface. The modeling approach (single Linear Regression, no hyperparameter tuning or feature engineering beyond encoding/scaling) is intentionally kept simple to reflect the original learning exercise — the focus of this update was making it usable and presentable, not maximizing predictive accuracy.
+Navigate to the **Delhi Housing Price Predictor** page from the sidebar.

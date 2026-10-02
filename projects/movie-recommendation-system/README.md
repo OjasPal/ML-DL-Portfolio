@@ -1,37 +1,37 @@
 # 🎬 Movie Recommendation System
 
-A content-based movie recommender that suggests similar movies based on genre, plot, keywords, and tagline — deployed as an interactive Streamlit page within the [ML-DL-Portfolio](../../) app.
+An interactive content-based movie recommendation dashboard built with Streamlit, using TF-IDF vectorization and cosine similarity to surface movies similar to any title a user enters.
 
 ## Overview
 
-Type in a movie you like, and the app finds the closest matching title in the dataset, then returns a ranked list of the most similar movies — based purely on textual content (no user ratings or viewing history required).
+Enter a movie title — or pick from a curated preset list — and the system returns a ranked list of the most similar titles, computed from each movie's genres, keywords, overview, and tagline. The interface is built as a custom two-panel dashboard: an interactive query panel on the left, and a live documentation/architecture panel on the right detailing how the pipeline works under the hood.
 
 ## Dataset
 
-**[Full TMDB Movies Dataset](https://www.kaggle.com/datasets/asaniczka/tmdb-movies-dataset-2023-930k-movies)** (Kaggle) — trimmed down to the top 50,000 movies by vote count, to keep the similarity computation fast while still covering a broad, relevant range of films.
+**[TMDB Movies Dataset](https://www.kaggle.com/datasets/asaniczka/tmdb-movies-dataset-2023-930k-movies)** (Kaggle), trimmed to the top 50,000 movies by vote count for a balance of coverage and performance.
 
-Columns used:
-- `genres`, `keywords`, `overview`, `tagline` — combined into a single text field that captures each movie's content and theme
-- `title` — used for matching user input and displaying recommendations
+Features used: `genres`, `keywords`, `overview`, `tagline` — combined into a single text representation per movie.
 
-## Model
+## Model & Architecture
 
-- **Approach:** Content-based filtering (not collaborative filtering — no user rating data is used)
-- **Vectorization:** `TfidfVectorizer` (scikit-learn) converts each movie's combined text into a numerical vector, weighting distinctive words more heavily than common ones
-- **Similarity:** Cosine similarity computed across all movie vectors, producing a similarity score between every pair of movies
+- **Vectorization:** `TfidfVectorizer` transforms each movie's combined text into a weighted feature vector.
+- **Similarity:** rather than precomputing and storing a full N×N similarity matrix (which scales quadratically and becomes memory-prohibitive at this dataset size), similarity is computed **on-the-fly** per query — only the selected movie's vector is compared against the full feature matrix at request time. This keeps memory usage flat regardless of dataset size while still returning results instantly.
+- **Pre-compiled artifacts:** the processed dataset (`movies_data.pkl`) and TF-IDF feature vectors (`feature_vectors.pkl`) are exported once from the notebook via `joblib` and loaded directly by the app at startup (`@st.cache_resource`) — the vectorizer is never refit at runtime, so the app starts instantly rather than reprocessing 50,000 rows on every load.
+- **Fuzzy matching:** `difflib.get_close_matches` resolves minor typos or partial titles to the closest actual entry in the dataset.
 
-## How It Works
+## Features
 
-1. User types a movie title (typos/partial names are fine)
-2. `difflib.get_close_matches()` finds the closest matching title in the dataset
-3. The matched movie's row in the similarity matrix is retrieved and sorted by score, highest first
-4. Top N most similar movies (excluding the movie itself) are displayed, with N adjustable via a slider
+- Preset quick-select for popular titles, or free-text search for any movie
+- Adjustable recommendation count (5–30 results)
+- Live dataset metrics (total movies indexed, similarity algorithm used)
+- Custom dark-themed UI with a dedicated architecture/documentation panel
 
 ## Tech Stack
 
 - **Python**, **Pandas**
 - **scikit-learn** — TfidfVectorizer, cosine_similarity
-- **Streamlit** — interactive UI
+- **Streamlit** — dashboard interface and caching
+- **joblib** — model artifact serialization
 
 ## Run Locally
 
@@ -41,13 +41,12 @@ From the repo root:
 # One-time setup
 pip install -r requirements.txt
 python projects/movie-recommendation-system/download_data.py
+```
 
-# Run the full multi-page app
+Ensure `movies_data.pkl` and `feature_vectors.pkl` are present in `projects/movie-recommendation-system/models/` (exported from the project notebook). Then:
+
+```bash
 streamlit run Home.py
 ```
 
-Then navigate to the **Movie Recommendation System** page from the sidebar.
-
-## Notes
-
-This was the first project in this portfolio — originally built as a 1st-year beginner project and revisited two years later with an updated, larger dataset and a Streamlit interface. The core recommendation logic (TF-IDF + cosine similarity) is unchanged from the original notebook; only the dataset size and the UI layer were added.
+Navigate to the **Movie Recommendation System** page from the sidebar.

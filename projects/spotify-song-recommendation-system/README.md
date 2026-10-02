@@ -1,41 +1,41 @@
 # 🎵 Spotify Song Recommendation System
 
-A content-based song recommender that suggests similar tracks based on audio features and playlist metadata — deployed as an interactive Streamlit page within the [ML-DL-Portfolio](../../) app.
+An interactive audio-based song recommendation dashboard built with Streamlit, matching tracks by acoustic similarity using cosine distance across standardized audio features.
 
 ## Overview
 
-Type in a song you like, and the app finds the closest matching track in the dataset, then returns a ranked list of the most similar songs — based on audio characteristics (danceability, energy, tempo, etc.) and playlist/genre context, not listening history.
-
-This project also includes genre segmentation via K-Means clustering in the original notebook, grouping songs into natural clusters based on their audio profile, independent of the labeled genre — useful for exploring how songs group together beyond the dataset's own genre tags.
+Search for a song by title — or pick from a curated top-10 list — and the system returns a ranked list of acoustically similar tracks, each shown with artist, album, and genre context. The interface is built as a custom two-panel dashboard: an interactive search panel on the left, and a live architecture/documentation panel on the right.
 
 ## Dataset
 
-**[30000 Spotify Songs](https://www.kaggle.com/datasets/joebeachcapital/30000-spotify-songs)** (Kaggle) — ~32,800 tracks with playlist metadata and detailed audio features.
+**[30000 Spotify Songs](https://www.kaggle.com/datasets/joebeachcapital/30000-spotify-songs)** (Kaggle) — ~32,800 tracks with playlist metadata and audio features.
 
-Columns used:
-- **Categorical:** `playlist_genre`, `playlist_subgenre`, `playlist_name`, `track_artist`, `track_album_name` — label-encoded
-- **Numerical:** `danceability`, `energy`, `loudness`, `speechiness`, `acousticness`, `instrumentalness`, `liveness`, `valence`, `tempo` — standardized via `StandardScaler`
-- `track_name` — used for matching user input and displaying recommendations
+Features used:
+- **Categorical:** `playlist_genre`, `playlist_subgenre`, `playlist_name`, `track_artist`, `track_album_name`
+- **Numerical:** `danceability`, `energy`, `loudness`, `speechiness`, `acousticness`, `instrumentalness`, `liveness`, `valence`, `tempo`
 
-## Model
+## Model & Architecture
 
-- **Approach:** Content-based filtering using a mix of categorical and numerical audio features (not collaborative filtering — no listening/rating history involved)
-- **Preprocessing:** each categorical column gets its own independently fitted `LabelEncoder`; all numerical features are standardized together
-- **Similarity:** cosine similarity computed across all songs' combined feature vectors
-- **Segmentation (notebook only):** K-Means clustering with the elbow method used to determine an optimal number of clusters, grouping songs by audio profile similarity
+- **Preprocessing:** each categorical feature is independently label-encoded; all numerical audio features are standardized via `StandardScaler`.
+- **Similarity:** a precomputed cosine similarity matrix is calculated once across the full combined feature set, capturing acoustic closeness between every track pair.
+- **Pre-compiled artifacts:** the processed track catalog (`spotify_df.joblib`), similarity matrix (`spotify_similarity.joblib`), scaler (`spotify_scaler.joblib`), and encoders (`spotify_encoders.joblib`) are exported once from the notebook via `joblib` and loaded directly by the app at startup — no retraining or refitting occurs at runtime, so recommendations are served instantly.
+- **Flexible matching:** queries first attempt an exact, case-insensitive title match, then fall back to a partial substring match if no exact match is found — making the search tolerant of minor variations in how a title is typed.
+- **Graceful fallback:** if the pre-compiled artifacts haven't been generated yet, the app falls back to a small built-in sample track library so the interface remains functional and demonstrable without the full dataset.
 
-## How It Works
+## Features
 
-1. User types a song title (typos/partial names are fine)
-2. `difflib.get_close_matches()` finds the closest matching title in the dataset
-3. The matched song's row in the similarity matrix is retrieved and sorted by score, highest first
-4. Top N most similar songs (excluding the song itself), each shown with its artist, are displayed — N adjustable via a slider
+- Free-text search with partial-match tolerance, or quick-select from top 10 tracks
+- Adjustable recommendation count (1–20 results)
+- Each result displayed with artist, album, and genre tags
+- Live dataset metrics (tracks in archive, similarity engine used)
+- Custom Spotify-inspired themed UI with a dedicated architecture/documentation panel
 
 ## Tech Stack
 
-- **Python**, **Pandas**
-- **scikit-learn** — LabelEncoder, StandardScaler, cosine_similarity, KMeans
-- **Streamlit** — interactive UI
+- **Python**, **Pandas**, **NumPy**
+- **scikit-learn** — LabelEncoder, StandardScaler, cosine_similarity
+- **Streamlit** — dashboard interface and caching
+- **joblib** — model artifact serialization
 
 ## Run Locally
 
@@ -45,13 +45,14 @@ From the repo root:
 # One-time setup
 pip install -r requirements.txt
 python projects/spotify-song-recommendation-system/download_data.py
+```
 
-# Run the full multi-page app
+Ensure `spotify_df.joblib`, `spotify_similarity.joblib`, `spotify_scaler.joblib`, and `spotify_encoders.joblib` are present in `projects/spotify-song-recommendation-system/model/` (exported from the project notebook). Then:
+
+```bash
 streamlit run Home.py
 ```
 
-Then navigate to the **Spotify Song Recommendation System** page from the sidebar.
+> **Note:** `spotify_similarity.joblib` (the precomputed similarity matrix, ~8 GB) is not included in this repository because it exceeds GitHub's file size limits. The other artifacts are included. If the similarity matrix is missing, the app rebuilds it from the dataset on first load and reuses it afterward. This first-run build takes a while and needs a large amount of RAM. Alternatively, run the project notebook to export the file yourself.
 
-## Notes
-
-Originally built as "Spotify Songs Genre Segmentation," combining unsupervised clustering with a content-based recommender. The deployed app focuses on the recommendation feature; the clustering/genre segmentation analysis remains in the original notebook for reference.
+Navigate to the **Spotify Song Recommendation System** page from the sidebar.
