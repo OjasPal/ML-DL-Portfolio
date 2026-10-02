@@ -1,4 +1,5 @@
 import os
+import sys
 import subprocess
 
 # Kaggle dataset slug: ruchi798/housing-prices-in-metropolitan-areas-of-india
@@ -18,7 +19,7 @@ def download_data():
     print(f"Downloading {DATASET_SLUG} from Kaggle...")
     try:
         subprocess.run(
-            ["kaggle", "datasets", "download", "-d", DATASET_SLUG, "-p", DATA_DIR, "--unzip"],
+            [sys.executable, "-m", "kaggle", "datasets", "download", "-d", DATASET_SLUG, "-p", DATA_DIR, "--unzip"],
             check=True,
         )
         print(f"Successfully downloaded and extracted dataset to {DATA_DIR}")

@@ -1,13 +1,27 @@
+# Web Framework & Custom Components
 streamlit
+streamlit-drawable-canvas
+
+# Data Handling & Analytics
 pandas
 numpy
+openpyxl
+
+# Machine Learning & AI
 scikit-learn
 joblib
 keras
 tensorflow
+
+# Image & Visual Processing
 pillow
-streamlit-drawable-canvas
-nltk
 matplotlib
 seaborn
+
+# Natural Language Processing & APIs
+nltk
+requests
+regex
+
+# Dataset Integration
 kaggle

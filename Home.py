@@ -206,8 +206,8 @@ PROJECTS = [
     {
         "name": "5. Customer Churn Prediction",
         "desc": "Classification model identifying customers likely to stop using a service.",
-        "status": "Coming Soon",
-        "page": None,
+        "status": "Live",
+        "page": "pages/5_Customer_Churn_Prediction.py",
         "icon": "👥",
         "domain": "Customer Analytics",
         "color": "#f59e0b",
@@ -216,8 +216,8 @@ PROJECTS = [
     {
         "name": "6. Cardiovascular Disease Prediction",
         "desc": "Predictive model assessing cardiovascular disease risk from health indicators.",
-        "status": "Coming Soon",
-        "page": None,
+        "status": "Live",
+        "page": "pages/6_Cardiovascular_Disease_Prediction.py",
         "icon": "❤️",
         "domain": "Clinical Diagnostics",
         "color": "#f43f5e",
@@ -226,8 +226,8 @@ PROJECTS = [
     {
         "name": "7. Heart Disease Prediction",
         "desc": "Classification model predicting heart disease presence from clinical data.",
-        "status": "Coming Soon",
-        "page": None,
+        "status": "Live",
+        "page": "pages/7_Heart_Disease_Prediction.py",
         "icon": "🫀",
         "domain": "Healthcare Analytics",
         "color": "#e11d48",
@@ -302,11 +302,11 @@ with st.sidebar:
             </div>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
                 <span style="font-size: 0.82rem; color: #cbd5e1;">Live Interactive Apps</span>
-                <span style="font-size: 0.85rem; font-weight: 700; color: #34d399; font-family: monospace;">5 / 11</span>
+                <span style="font-size: 0.85rem; font-weight: 700; color: #34d399; font-family: monospace;">8 / 11</span>
             </div>
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <span style="font-size: 0.82rem; color: #cbd5e1;">In Active Pipeline</span>
-                <span style="font-size: 0.85rem; font-weight: 700; color: #fbbf24; font-family: monospace;">6 / 11</span>
+                <span style="font-size: 0.85rem; font-weight: 700; color: #fbbf24; font-family: monospace;">3 / 11</span>
             </div>
         </div>
         """,
@@ -401,7 +401,7 @@ col_m1, col_m2, col_m3, col_m4 = st.columns(4)
 with col_m1:
     st.metric(label="TOTAL ARCHITECTURES", value="11 Projects")
 with col_m2:
-    st.metric(label="DEPLOYED LIVE APPS", value="5 Active")
+    st.metric(label="DEPLOYED LIVE APPS", value="8 Active")
 with col_m3:
     st.metric(label="INFERENCE LATENCY", value="< 100 ms")
 with col_m4:
@@ -425,7 +425,7 @@ st.markdown(
         </div>
         <span class="badge-live">
             <span style="width: 7px; height: 7px; border-radius: 50%; background: #10b981; display: inline-block;"></span>
-            5 APPS READY
+            8 APPS READY
         </span>
     </div>
     """,
@@ -434,7 +434,7 @@ st.markdown(
 
 live_projects = [p for p in PROJECTS if p["status"] == "Live"]
 
-# Render 5 live projects in responsive column pairs
+# Render live projects in responsive column pairs
 for i in range(0, len(live_projects), 2):
     batch = live_projects[i : i + 2]
     cols = st.columns(len(batch), gap="medium")
@@ -492,7 +492,7 @@ st.markdown(
             </p>
         </div>
         <span class="badge-soon">
-            6 PIPELINE QUEUED
+            3 PIPELINE QUEUED
         </span>
     </div>
     """,

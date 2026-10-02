@@ -1,4 +1,5 @@
 import os
+import sys
 import subprocess
 import zipfile
 import pandas as pd
@@ -18,7 +19,7 @@ def download_full_dataset():
 
     print(f"Downloading '{DATASET}' from Kaggle (this is the full ~650MB+ file)...")
     subprocess.run(
-        ["kaggle", "datasets", "download", "-d", DATASET, "-p", DATA_DIR],
+        [sys.executable, "-m", "kaggle", "datasets", "download", "-d", DATASET, "-p", DATA_DIR],
         check=True
     )
 
