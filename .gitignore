@@ -224,3 +224,4 @@ tensorflow-env/
 *spotify_similarity.joblib
 
 catboost_info
+models/best_checkpoint.pth

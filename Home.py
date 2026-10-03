@@ -167,7 +167,7 @@ PROJECTS = [
         "name": "1. Movie Recommendation System",
         "desc": "Content-based movie recommender using TF-IDF feature extraction and cosine similarity on TMDB data.",
         "status": "Live",
-        "page": "pages/1_Movie_Recommendation_System.py",
+        "page": "pages/01_Movie_Recommendation_System.py",
         "icon": "🎬",
         "domain": "Content Recommender",
         "color": "#a855f7",
@@ -177,7 +177,7 @@ PROJECTS = [
         "name": "2. Housing Price Prediction",
         "desc": "Regression model estimating Delhi property prices based on area, location, and amenities.",
         "status": "Live",
-        "page": "pages/2_Housing_Price_Prediction.py",
+        "page": "pages/02_Housing_Price_Prediction.py",
         "icon": "🏠",
         "domain": "Real Estate Valuation",
         "color": "#10b981",
@@ -187,7 +187,7 @@ PROJECTS = [
         "name": "3. Spotify Song Recommendation System",
         "desc": "Music recommendation system matching track audio features using scaling and cosine similarity.",
         "status": "Live",
-        "page": "pages/3_Spotify_Song_Recommendation_System.py",
+        "page": "pages/03_Spotify_Song_Recommendation_System.py",
         "icon": "🎵",
         "domain": "Audio Clustering",
         "color": "#34d399",
@@ -197,7 +197,7 @@ PROJECTS = [
         "name": "4. Email Spam Detector",
         "desc": "Text classification pipeline detecting spam vs. legitimate messages using NLP techniques.",
         "status": "Live",
-        "page": "pages/4_Email_Spam_Detector.py",
+        "page": "pages/04_Email_Spam_Detector.py",
         "icon": "📧",
         "domain": "NLP / Classification",
         "color": "#3b82f6",
@@ -207,7 +207,7 @@ PROJECTS = [
         "name": "5. Customer Churn Prediction",
         "desc": "Classification model identifying customers likely to stop using a service.",
         "status": "Live",
-        "page": "pages/5_Customer_Churn_Prediction.py",
+        "page": "pages/05_Customer_Churn_Prediction.py",
         "icon": "👥",
         "domain": "Customer Analytics",
         "color": "#f59e0b",
@@ -217,7 +217,7 @@ PROJECTS = [
         "name": "6. Cardiovascular Disease Prediction",
         "desc": "Predictive model assessing cardiovascular disease risk from health indicators.",
         "status": "Live",
-        "page": "pages/6_Cardiovascular_Disease_Prediction.py",
+        "page": "pages/06_Cardiovascular_Disease_Prediction.py",
         "icon": "❤️",
         "domain": "Clinical Diagnostics",
         "color": "#f43f5e",
@@ -227,7 +227,7 @@ PROJECTS = [
         "name": "7. Heart Disease Prediction",
         "desc": "Classification model predicting heart disease presence from clinical data.",
         "status": "Live",
-        "page": "pages/7_Heart_Disease_Prediction.py",
+        "page": "pages/07_Heart_Disease_Prediction.py",
         "icon": "🫀",
         "domain": "Healthcare Analytics",
         "color": "#e11d48",
@@ -236,18 +236,18 @@ PROJECTS = [
     {
         "name": "8. Salary Prediction",
         "desc": "Regression model estimating salary based on experience and job-related features.",
-        "status": "Coming Soon",
-        "page": None,
+        "status": "Live",
+        "page": "pages/08_Salary_Prediction.py",
         "icon": "💰",
         "domain": "Workforce Econometrics",
         "color": "#eab308",
         "gradient": "linear-gradient(90deg, #ca8a04 0%, #eab308 100%)",
     },
     {
-        "name": "9. Image Classification",
+        "name": "9. Pet Breed Classifier",
         "desc": "Deep learning model classifying images into multiple categories.",
-        "status": "Coming Soon",
-        "page": None,
+        "status": "Live",
+        "page": "pages/09_Pet_Breed_Classifier.py",
         "icon": "🖼️",
         "domain": "Deep Learning / CNN",
         "color": "#2dd4bf",
@@ -256,8 +256,8 @@ PROJECTS = [
     {
         "name": "10. Face Detection",
         "desc": "Computer vision model detecting faces within images.",
-        "status": "Coming Soon",
-        "page": None,
+        "status": "Live",
+        "page": "pages/10_Face_Detection.py",
         "icon": "🙂",
         "domain": "Computer Vision",
         "color": "#818cf8",
@@ -302,11 +302,11 @@ with st.sidebar:
             </div>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
                 <span style="font-size: 0.82rem; color: #cbd5e1;">Live Interactive Apps</span>
-                <span style="font-size: 0.85rem; font-weight: 700; color: #34d399; font-family: monospace;">8 / 11</span>
+                <span style="font-size: 0.85rem; font-weight: 700; color: #34d399; font-family: monospace;">11 / 11</span>
             </div>
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <span style="font-size: 0.82rem; color: #cbd5e1;">In Active Pipeline</span>
-                <span style="font-size: 0.85rem; font-weight: 700; color: #fbbf24; font-family: monospace;">3 / 11</span>
+                <span style="font-size: 0.85rem; font-weight: 700; color: #fbbf24; font-family: monospace;">0 / 11</span>
             </div>
         </div>
         """,
@@ -401,7 +401,7 @@ col_m1, col_m2, col_m3, col_m4 = st.columns(4)
 with col_m1:
     st.metric(label="TOTAL ARCHITECTURES", value="11 Projects")
 with col_m2:
-    st.metric(label="DEPLOYED LIVE APPS", value="8 Active")
+    st.metric(label="DEPLOYED LIVE APPS", value="11 Active")
 with col_m3:
     st.metric(label="INFERENCE LATENCY", value="< 100 ms")
 with col_m4:
@@ -425,7 +425,7 @@ st.markdown(
         </div>
         <span class="badge-live">
             <span style="width: 7px; height: 7px; border-radius: 50%; background: #10b981; display: inline-block;"></span>
-            8 APPS READY
+            11 APPS READY
         </span>
     </div>
     """,
@@ -492,7 +492,7 @@ st.markdown(
             </p>
         </div>
         <span class="badge-soon">
-            3 PIPELINE QUEUED
+            0 PIPELINE QUEUED
         </span>
     </div>
     """,

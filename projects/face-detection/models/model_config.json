@@ -1,0 +1,16 @@
+{
+    "model_name": "ResNet-10_SSD_Face_Detector",
+    "framework": "OpenCV DNN (Caffe)",
+    "architecture_file": "models/deploy.prototxt",
+    "weights_file": "models/res10_300x300_ssd_iter_140000.caffemodel",
+    "input_size": [
+        300,
+        300
+    ],
+    "mean_subtraction_values": [
+        104.0,
+        177.0,
+        123.0
+    ],
+    "confidence_threshold": 0.5
+}
