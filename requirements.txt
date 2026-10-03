@@ -1,5 +1,5 @@
 # Web Framework & Custom Components
-streamlit
+streamlit==1.62.0
 streamlit-drawable-canvas
 
 # Data Handling & Analytics
@@ -8,15 +8,17 @@ numpy
 openpyxl
 
 # Machine Learning & AI
-scikit-learn
+scikit-learn==1.9.1
 joblib
-keras
-tensorflow
+catboost==1.2.10
+keras==3.15.1
+tensorflow==2.21.0
 
 # Image & Visual Processing
 pillow
 matplotlib
 seaborn
+opencv-python==4.10.0.84
 
 # Natural Language Processing & APIs
 nltk
@@ -25,3 +27,4 @@ regex
 
 # Dataset Integration
 kaggle
+

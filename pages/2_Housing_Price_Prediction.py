@@ -254,7 +254,7 @@ with col_main:
         with col_m1:
             st.metric(label="MODEL ALGORITHM", value="Linear Regression")
         with col_m2:
-            st.metric(label="FEATURE NORMALIZATION", value="StandardScaler (Joblib)")
+            st.metric(label="FEATURE NORMALIZATION", value="StandardScaler")
 
     st.markdown("<div style='height: 1.25rem;'></div>", unsafe_allow_html=True)
 
@@ -458,7 +458,7 @@ with col_info:
     )
 
     st.code(
-        "kaggle datasets download -d mlg-ulb/creditcardfraud -p projects/housing-price-prediction/data/ --unzip",
+        "kaggle datasets download -d ruchi798/housing-prices-in-metropolitan-areas-of-india -p projects/housing-price-prediction/data/ --unzip",
         language="bash",
     )
 

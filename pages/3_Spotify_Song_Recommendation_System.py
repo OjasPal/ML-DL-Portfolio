@@ -454,7 +454,7 @@ with col_info:
     )
 
     st.code(
-        "kaggle datasets download -d mrmorj/dataset-of-songs-in-spotify -p projects/spotify-song-recommendation-system/data/ --unzip",
+        "kaggle datasets download -d joebeachcapital/30000-spotify-songs -p projects/spotify-song-recommendation-system/data/ --unzip",
         language="bash",
     )
 

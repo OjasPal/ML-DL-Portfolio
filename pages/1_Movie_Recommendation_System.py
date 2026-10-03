@@ -391,7 +391,7 @@ with col_info:
     )
 
     st.code(
-        "kaggle datasets download -d ashpalsingh1525/imdb-movies-dataset -p projects/movie-recommendation-system/data/ --unzip",
+        "kaggle datasets download -d asaniczka/tmdb-movies-dataset-2023-930k-movies -p projects/movie-recommendation-system/data/ --unzip",
         language="bash",
     )
 

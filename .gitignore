@@ -222,3 +222,5 @@ data/
 tensorflow-env/
 
 *spotify_similarity.joblib
+
+catboost_info
