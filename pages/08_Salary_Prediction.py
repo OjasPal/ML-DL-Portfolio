@@ -229,7 +229,8 @@ ROLE_FALLBACK = {
     "Android": "Mobile", "IOS": "Mobile", "Mobile": "Mobile",
     "Frontend": "Frontend_Web", "Web": "Frontend_Web", "Backend": "Backend",
     "Java": "Java_JVM", "Python": "Python", "Database": "Database",
-    "Testing": "QA_Testing", "SDE": "SDE_Generalist",
+    "Testing": "QA_Testing", "SDE": "SDE_Generalist", "Data Science": "Data_AI",
+    "Machine Learning": "Data_AI",
 }
 
 RARE_DOMAINS = {"Data_AI", "DevOps_Cloud", "Security", "Embedded", "Game_Dev"}
@@ -595,13 +596,16 @@ with col_main:
             options=[
                 "Backend", "Frontend", "Mobile", "Android", "IOS", "Java",
                 "Python", "Database", "Testing", "Web", "SDE",
+                "Data Science", "Machine Learning",
             ],
             index=[
                 "Backend", "Frontend", "Mobile", "Android", "IOS", "Java",
                 "Python", "Database", "Testing", "Web", "SDE",
+                "Data Science", "Machine Learning",
             ].index(p_role) if p_role in [
                 "Backend", "Frontend", "Mobile", "Android", "IOS", "Java",
                 "Python", "Database", "Testing", "Web", "SDE",
+                "Data Science", "Machine Learning",
             ] else 0,
         )
 
