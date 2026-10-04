@@ -201,50 +201,18 @@ similarity, scaler, encoders = load_artifacts()
 # ---------------------------------------------------------
 # Feature Matrix Construction (For On-The-Fly Mode)
 # ---------------------------------------------------------
+CAT_COLS = ["playlist_genre", "playlist_subgenre", "playlist_name", "track_artist", "track_album_name"]
+NUM_COLS = ["danceability", "energy", "loudness", "speechiness", "acousticness",
+            "instrumentalness", "liveness", "valence", "tempo"]
+
+
 @st.cache_data(show_spinner="Preparing feature representations...")
 def prepare_feature_matrix(data_df, _scaler_obj, _encoders_obj):
-    """
-    Constructs normalized numerical and encoded categorical features
-    matching the training pipeline when precomputed matrix is absent.
-    """
-    num_cols = ['danceability', 'energy', 'key', 'loudness', 'mode',
-                'speechiness', 'acousticness', 'instrumentalness',
-                'liveness', 'valence', 'tempo', 'duration_ms']
-
-    # Filter for available numerical columns in dataset
-    available_num_cols = [c for c in num_cols if c in data_df.columns]
-
-    feature_parts = []
-
-    # Handle Numerical Features
-    if available_num_cols:
-        num_data = data_df[available_num_cols].fillna(0)
-        if _scaler_obj is not None:
-            try:
-                scaled_num = _scaler_obj.transform(num_data)
-            except Exception:
-                scaled_num = num_data.values
-        else:
-            scaled_num = num_data.values
-        feature_parts.append(scaled_num)
-
-    # Handle Categorical Features via Encoders if available
-    cat_cols = ['playlist_genre', 'playlist_subgenre', 'playlist_name', 'track_artist', 'track_album_name']
-    if _encoders_obj and isinstance(_encoders_obj, dict):
-        for col in cat_cols:
-            if col in data_df.columns and col in _encoders_obj:
-                try:
-                    encoded_col = _encoders_obj[col].transform(data_df[col].astype(str).fillna("Unknown")).reshape(-1,
-                                                                                                                   1)
-                    feature_parts.append(encoded_col)
-                except Exception:
-                    pass
-
-    if feature_parts:
-        return np.hstack(feature_parts)
-    else:
-        # Fallback to numeric columns if no encoders match
-        return data_df.select_dtypes(include=[np.number]).fillna(0).values
+    parts = []
+    for col in CAT_COLS:
+        parts.append(_encoders_obj[col].transform(data_df[col]).reshape(-1, 1))
+    parts.append(_scaler_obj.transform(data_df[NUM_COLS]))
+    return np.hstack(parts)
 
 
 feature_matrix = prepare_feature_matrix(df, scaler, encoders) if df_loaded_from_joblib else None
