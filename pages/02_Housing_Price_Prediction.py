@@ -197,7 +197,15 @@ def load_artifacts():
 
 
 def predict_price(model, scaler, feature_cols, input_values):
-    row = np.array([[input_values.get(col, 0) for col in feature_cols]])
+    raw_row = [input_values.get(col, 0) for col in feature_cols]
+
+    if scaler is not None and hasattr(scaler, "n_features_in_"):
+        expected_n = scaler.n_features_in_
+        if len(raw_row) < expected_n:
+            raw_row.extend([0] * (expected_n - len(raw_row)))
+
+    row = np.array([raw_row])
+
     if scaler is not None:
         scaled_row = scaler.transform(row)
         price_millions = model.predict(scaled_row)[0]
