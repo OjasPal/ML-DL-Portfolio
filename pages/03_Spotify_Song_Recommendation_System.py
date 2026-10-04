@@ -3,6 +3,7 @@ import joblib
 import numpy as np
 import pandas as pd
 import streamlit as st
+from sklearn.metrics.pairwise import cosine_similarity
 
 # ---------- Page Config ----------
 st.set_page_config(
@@ -151,18 +152,26 @@ ENCODERS_PATH = resolve_file("spotify_encoders.joblib")
 # Fallback sample library if joblib models are pending download
 SAMPLE_FALLBACK_TRACKS = pd.DataFrame(
     [
-        {"track_name": "Blinding Lights", "artist_name": "The Weeknd", "album_name": "After Hours", "genre": "Synthpop"},
-        {"track_name": "Save Your Tears", "artist_name": "The Weeknd", "album_name": "After Hours", "genre": "Synthpop"},
+        {"track_name": "Blinding Lights", "artist_name": "The Weeknd", "album_name": "After Hours",
+         "genre": "Synthpop"},
+        {"track_name": "Save Your Tears", "artist_name": "The Weeknd", "album_name": "After Hours",
+         "genre": "Synthpop"},
         {"track_name": "Levitating", "artist_name": "Dua Lipa", "album_name": "Future Nostalgia", "genre": "Dance-Pop"},
-        {"track_name": "Don't Start Now", "artist_name": "Dua Lipa", "album_name": "Future Nostalgia", "genre": "Nu-Disco"},
+        {"track_name": "Don't Start Now", "artist_name": "Dua Lipa", "album_name": "Future Nostalgia",
+         "genre": "Nu-Disco"},
         {"track_name": "Shape of You", "artist_name": "Ed Sheeran", "album_name": "÷ (Divide)", "genre": "Pop"},
         {"track_name": "Bad Habits", "artist_name": "Ed Sheeran", "album_name": "= (Equals)", "genre": "Dance-Pop"},
-        {"track_name": "Starboy", "artist_name": "The Weeknd, Daft Punk", "album_name": "Starboy", "genre": "Electro-Pop"},
+        {"track_name": "Starboy", "artist_name": "The Weeknd, Daft Punk", "album_name": "Starboy",
+         "genre": "Electro-Pop"},
         {"track_name": "As It Was", "artist_name": "Harry Styles", "album_name": "Harry's House", "genre": "Indie Pop"},
-        {"track_name": "Watermelon Sugar", "artist_name": "Harry Styles", "album_name": "Fine Line", "genre": "Pop Rock"},
-        {"track_name": "Stay", "artist_name": "The Kid LAROI, Justin Bieber", "album_name": "F*CK LOVE 3", "genre": "Pop"},
-        {"track_name": "Peaches", "artist_name": "Justin Bieber, Daniel Caesar", "album_name": "Justice", "genre": "R&B"},
-        {"track_name": "Someone You Loved", "artist_name": "Lewis Capaldi", "album_name": "Divinely Uninspired", "genre": "Pop"},
+        {"track_name": "Watermelon Sugar", "artist_name": "Harry Styles", "album_name": "Fine Line",
+         "genre": "Pop Rock"},
+        {"track_name": "Stay", "artist_name": "The Kid LAROI, Justin Bieber", "album_name": "F*CK LOVE 3",
+         "genre": "Pop"},
+        {"track_name": "Peaches", "artist_name": "Justin Bieber, Daniel Caesar", "album_name": "Justice",
+         "genre": "R&B"},
+        {"track_name": "Someone You Loved", "artist_name": "Lewis Capaldi", "album_name": "Divinely Uninspired",
+         "genre": "Pop"},
     ]
 )
 
@@ -179,16 +188,66 @@ def load_data():
 
 @st.cache_resource(show_spinner="Loading audio similarity models & encoders...")
 def load_artifacts():
-    if SIMILARITY_PATH and SCALER_PATH and ENCODERS_PATH:
-        similarity = joblib.load(SIMILARITY_PATH)
-        scaler = joblib.load(SCALER_PATH)
-        encoders = joblib.load(ENCODERS_PATH)
-        return similarity, scaler, encoders, True
-    return None, None, None, False
+    similarity = joblib.load(SIMILARITY_PATH) if SIMILARITY_PATH else None
+    scaler = joblib.load(SCALER_PATH) if SCALER_PATH else None
+    encoders = joblib.load(ENCODERS_PATH) if ENCODERS_PATH else None
+    return similarity, scaler, encoders
 
 
 df, df_loaded_from_joblib = load_data()
-similarity, scaler, encoders, models_loaded = load_artifacts()
+similarity, scaler, encoders = load_artifacts()
+
+
+# ---------------------------------------------------------
+# Feature Matrix Construction (For On-The-Fly Mode)
+# ---------------------------------------------------------
+@st.cache_data(show_spinner="Preparing feature representations...")
+def prepare_feature_matrix(data_df, _scaler_obj, _encoders_obj):
+    """
+    Constructs normalized numerical and encoded categorical features
+    matching the training pipeline when precomputed matrix is absent.
+    """
+    num_cols = ['danceability', 'energy', 'key', 'loudness', 'mode',
+                'speechiness', 'acousticness', 'instrumentalness',
+                'liveness', 'valence', 'tempo', 'duration_ms']
+
+    # Filter for available numerical columns in dataset
+    available_num_cols = [c for c in num_cols if c in data_df.columns]
+
+    feature_parts = []
+
+    # Handle Numerical Features
+    if available_num_cols:
+        num_data = data_df[available_num_cols].fillna(0)
+        if _scaler_obj is not None:
+            try:
+                scaled_num = _scaler_obj.transform(num_data)
+            except Exception:
+                scaled_num = num_data.values
+        else:
+            scaled_num = num_data.values
+        feature_parts.append(scaled_num)
+
+    # Handle Categorical Features via Encoders if available
+    cat_cols = ['playlist_genre', 'playlist_subgenre', 'playlist_name', 'track_artist', 'track_album_name']
+    if _encoders_obj and isinstance(_encoders_obj, dict):
+        for col in cat_cols:
+            if col in data_df.columns and col in _encoders_obj:
+                try:
+                    encoded_col = _encoders_obj[col].transform(data_df[col].astype(str).fillna("Unknown")).reshape(-1,
+                                                                                                                   1)
+                    feature_parts.append(encoded_col)
+                except Exception:
+                    pass
+
+    if feature_parts:
+        return np.hstack(feature_parts)
+    else:
+        # Fallback to numeric columns if no encoders match
+        return data_df.select_dtypes(include=[np.number]).fillna(0).values
+
+
+feature_matrix = prepare_feature_matrix(df, scaler, encoders) if df_loaded_from_joblib else None
 
 
 # ---------------------------------------------------------
@@ -202,7 +261,7 @@ def extract_artist(row):
 
 
 # ---------------------------------------------------------
-# Recommendation Logic (Preserving Original ML Architecture)
+# Recommendation Logic (Dual Mode Execution)
 # ---------------------------------------------------------
 def get_recommendations(song_title, top_n=5):
     # Case-insensitive title match
@@ -217,16 +276,26 @@ def get_recommendations(song_title, top_n=5):
 
     idx = matches.index[0]
 
-    # If full similarity matrix is loaded, compute top similarity neighbors
+    # MODE 1: Local Pre-computed Similarity Matrix exists
     if similarity is not None:
         sim_scores = list(enumerate(similarity[idx]))
         sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
-        # Exclude the selected song itself
-        sim_scores = sim_scores[1 : top_n + 1]
+        sim_scores = sim_scores[1: top_n + 1]
         song_indices = [i[0] for i in sim_scores]
         return df.iloc[song_indices]
+
+    # MODE 2: On-the-Fly Calculation (Streamlit Cloud Memory-Optimized)
+    elif feature_matrix is not None and len(feature_matrix) > idx:
+        target_vector = feature_matrix[idx].reshape(1, -1)
+        sim_scores_arr = cosine_similarity(target_vector, feature_matrix)[0]
+
+        # Rank top indices excluding self
+        sorted_indices = np.argsort(sim_scores_arr)[::-1]
+        sorted_indices = [i for i in sorted_indices if i != idx][:top_n]
+        return df.iloc[sorted_indices]
+
+    # MODE 3: Fallback Simulation for Sample Library
     else:
-        # Fallback simulation if running before dataset download
         selected_genre = df.loc[idx].get("genre", "")
         same_genre = df[df.index != idx]
         if "genre" in df.columns and selected_genre:
@@ -365,7 +434,6 @@ with col_main:
                         if g_name and pd.notna(g_name):
                             sub_info += f" • <span style='color: #6ee7b7;'>[{g_name}]</span>"
 
-                        # Ensure this st.markdown block matches the 24-space / 6-tab indent level inside the loop
                         st.markdown(
                             f"""
                                 <div class="track-item">
