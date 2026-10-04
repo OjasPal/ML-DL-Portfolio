@@ -405,7 +405,7 @@ with col_m1:
 with col_m2:
     st.metric(label="DEPLOYED LIVE APPS", value="11 Active")
 with col_m3:
-    st.metric(label="INFERENCE LATENCY", value="< 100 ms")
+    st.metric(label="TYPICAL INFERENCE", value="< 100 ms")
 with col_m4:
     st.metric(label="ML LOGIC PRESERVATION", value="100%")
 

@@ -271,6 +271,9 @@ def get_classifier():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = model.to(device).eval()
 
+    with torch.no_grad():
+        model(torch.zeros(1, 3, artifact["img_size"], artifact["img_size"]).to(device))
+
     transform = transforms.Compose([
         transforms.Resize(256),
         transforms.CenterCrop(artifact["img_size"]),
@@ -647,7 +650,7 @@ with col_info:
             <div class="meta-row"><span>Validation Accuracy</span><span>93.6%</span></div>
             <div class="meta-row"><span>Dataset Size</span><span>8,847 Images</span></div>
             <div class="meta-row"><span>Total Classes</span><span>46 Breeds: 12 Cats / 34 Dogs</span></div>
-            <div class="meta-row"><span>Framework</span><span>PyTorch / CUDA</span></div>
+            <div class="meta-row"><span>Framework</span><span>PyTorch / Torchvision</span></div>
         </div>
         """,
         unsafe_allow_html=True,
