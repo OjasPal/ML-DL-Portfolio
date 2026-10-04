@@ -1,3 +1,5 @@
+--extra-index-url https://download.pytorch.org/whl/cpu
+
 # Web Framework & Custom Components
 streamlit==1.62.0
 streamlit-drawable-canvas
@@ -5,7 +7,7 @@ streamlit-drawable-canvas
 # Data Handling & Analytics
 pandas
 numpy
-openpyxl
+plotly
 
 # Machine Learning & AI
 scikit-learn==1.9.1
@@ -13,17 +15,15 @@ joblib
 catboost==1.2.10
 keras==3.15.1
 tensorflow==2.21.0
+torch==2.5.1
+torchvision==0.20.1
 
 # Image & Visual Processing
 pillow
-matplotlib
-seaborn
 opencv-python==4.10.0.84
 
-# Natural Language Processing & APIs
+# Natural Language Processing
 nltk
-requests
-regex
 
 # Dataset Integration
 kaggle

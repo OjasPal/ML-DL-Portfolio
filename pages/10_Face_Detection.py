@@ -458,7 +458,7 @@ with col_main:
                 st.image(
                     original_image,
                     caption="Original Input Image",
-                    use_container_width=True,
+                    width="stretch",
                 )
 
             with action_col:
@@ -474,7 +474,7 @@ with col_main:
 
                 detect_clicked = st.button(
                     "⚡ Detect Faces",
-                    use_container_width=True,
+                    width="stretch",
                 )
 
             if detect_clicked:
@@ -539,7 +539,7 @@ with col_main:
                     st.image(
                         original_image,
                         caption=input_label,
-                        use_container_width=True,
+                        width="stretch",
                     )
 
                 with comparison_right:
@@ -550,7 +550,7 @@ with col_main:
                     st.image(
                         processed_image,
                         caption=f"{len(faces)} face(s) detected",
-                        use_container_width=True,
+                        width="stretch",
                     )
 
                 st.markdown("<div style='height: 0.85rem;'></div>", unsafe_allow_html=True)

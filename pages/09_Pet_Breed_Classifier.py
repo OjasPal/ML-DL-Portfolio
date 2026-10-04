@@ -239,7 +239,8 @@ SAMPLE_IMAGES = {
     "Dog Sample 2": os.path.join(SAMPLES_DIR, "chihuahua.jpg"),
 }
 
-GITHUB_URL = "https://github.com/OjasPal/ML-DL-Portfolio"
+portfolio = "https://github.com/OjasPal/ML-DL-Portfolio"
+GITHUB_URL = portfolio
 
 # The 12 cat breeds (every other class in the model is a dog breed)
 CAT_BREEDS = {
@@ -563,7 +564,7 @@ with col_main:
                 st.image(
                     pet_image,
                     caption=f"{image_width} × {image_height} px",
-                    use_container_width=True,
+                    width="stretch",
                 )
 
             # ----- Right: prediction results -----
@@ -595,7 +596,7 @@ with col_main:
                 )
                 st.plotly_chart(
                     build_top5_chart(top_predictions),
-                    use_container_width=True,
+                    width="stretch",
                     config={"displayModeBar": False},
                 )
 
