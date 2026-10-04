@@ -407,7 +407,7 @@ with col_m2:
 with col_m3:
     st.metric(label="TYPICAL INFERENCE", value="< 100 ms")
 with col_m4:
-    st.metric(label="ML LOGIC PRESERVATION", value="100%")
+    st.metric(label="ARTIFACT CACHING", value="100% Enabled")
 
 st.markdown("<div style='height: 2.25rem;'></div>", unsafe_allow_html=True)
 
