@@ -20,7 +20,7 @@ torchvision==0.20.1
 
 # Image & Visual Processing
 pillow
-opencv-python==4.10.0.84
+opencv-python-headless==4.10.0.84
 
 # Natural Language Processing
 nltk
